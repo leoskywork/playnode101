@@ -19,12 +19,15 @@ npm i express         # for RESTful api
   ejs                 # template engine
   express-ejs-layouts # ejs doesn't contains layout(2019.Nov)
 
-npm i -D nodemon      # for live server update , -D => dev dependency
+npm i -D nodemon      # for live server update, no need to restart project make changes take effects, -D => dev dependency
 
 # change package.json
   # add scripts.start, scripts.dev
 
 npm run dev           # start server in dev mode(with nodemon)
+
+npm i --save cors     # install cors module for enabling cross origin resource sharing
+
 
 ```
 

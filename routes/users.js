@@ -31,14 +31,16 @@ router.post('/register', (req, resp) => {
 		name = String(email).split('@')[0];
 	}
 
-	User.findOne({ email: email }).then(user => {
+	const emailLower = String(email).toLowerCase();
+
+	User.findOne({ emailLower: emailLower }).then(user => {
 		if (user) {
 			errors.push(`email already registered`);
 			resp.send(new ApiResult(false, { errors, regInfo: desensitizeReq(req.body) }));
 			return;
 		}
 
-		const newUser = new User({ name, email, password });
+		const newUser = new User({ name, email, emailLower, password });
 
 		bcrypt.genSalt(AppConst.bcryptSaltRounds, (err, salt) => {
 			if (err) {

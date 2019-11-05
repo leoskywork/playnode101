@@ -10,6 +10,11 @@ const userSchema = new mongoose.Schema({
 		type: String,
 		required: true
 	},
+	//it's case sensitive when doing mongoose.find(), so store lowered case for match
+	emailLower: {
+		type: String,
+		required: true
+	},
 	password: {
 		type: String,
 		required: true

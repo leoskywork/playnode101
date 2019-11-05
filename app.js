@@ -1,8 +1,8 @@
 const express = require('express');
-const Constants = require('./common/constants');
+const AppConst = require('./common/app-const');
 const mongoose = require('mongoose');
 const app = express();
-const port = process.env.PORT || Constants.port;
+const port = process.env.PORT || AppConst.port;
 
 //----- body parser - put this before routes
 //todo: what does 'extended' do? set to true?

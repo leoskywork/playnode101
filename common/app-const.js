@@ -18,6 +18,15 @@ class Constants {
 		// return 'node101';
 	}
 
+	static get bcryptSaltRounds() {
+		return 10;
+	}
+
+	//----- for dev
+	static get devEnableDB() {
+		return true;
+	}
+
 	static get modelNames() {
 		return {
 			get user() {

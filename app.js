@@ -21,14 +21,16 @@ app.use('/users', require('./routes/users'));
 //----- db
 const dbUri = require('./common/keys').mongoUri;
 // console.log(dbUri);
-mongoose
-	.connect(dbUri, { useNewUrlParser: true, useUnifiedTopology: true })
-	.then(() => {
-		console.log('mango db connected');
-	})
-	.catch(error => {
-		//todo: error handling
-		console.log(`mango db error: ${error}`);
-	});
+if (AppConst.devEnableDB) {
+	mongoose
+		.connect(dbUri, { useNewUrlParser: true, useUnifiedTopology: true })
+		.then(() => {
+			console.log('mango db connected');
+		})
+		.catch(error => {
+			//todo: error handling
+			console.log(`mango db error: ${error}`);
+		});
+}
 
 app.listen(port, console.log(`server started on port ${port}`));

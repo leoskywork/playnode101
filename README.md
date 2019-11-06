@@ -1,8 +1,8 @@
 # node 101 note
 
-## node with auth
+> node with auth
 
-### setup & run
+## setup & run
 
 ```sh
 
@@ -20,13 +20,12 @@ npm i express         # for RESTful api
   express-ejs-layouts # ejs doesn't contains layout(2019.Nov)
 
 npm i -D nodemon      # for live server update, no need to restart project make changes take effects, -D => dev dependency
+npm i --save cors     # install cors module for enabling cross origin resource sharing
 
 # change package.json
   # add scripts.start, scripts.dev
 
 npm run dev           # start server in dev mode(with nodemon)
-
-npm i --save cors     # install cors module for enabling cross origin resource sharing
 
 
 ```

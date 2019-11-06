@@ -13,18 +13,36 @@ class Constants {
 		return 5000;
 	}
 
-	static get mongopwd() {
-		return 'angular101pwd';
-		// return 'node101';
-	}
-
 	static get bcryptSaltRounds() {
 		return 10;
 	}
 
-	//----- for dev
-	static get devEnableDB() {
-		return true;
+	static get mongoConfig() {
+		return {
+			get useCloud() {
+				return false;
+			},
+
+			get mongoUri() {
+				return this.useCloud ? this.mongoCloud : this.mongoLocal;
+			},
+
+			get mongoCloud() {
+				return `mongodb+srv://angular101:${encodeURIComponent(this.mongopwd)}@aws-sgp-a1-xzhdi.mongodb.net/test?retryWrites=true&w=majority`;
+			},
+			//copy the following uri then open mongoDB compass, it will auto fill connect fields(except pwd, which need manually input)
+			//mongoCompassUri: 'mongodb+srv://angular101:<password>@aws-sgp-a1-xzhdi.mongodb.net/test',
+			//mongoShellUri: 'mongo "mongodb+srv://aws-sgp-a1-xzhdi.mongodb.net/test"  --username angular101'
+
+			get mongoLocal() {
+				return `mongodb://node101:${encodeURIComponent(this.mongopwd)}@localhost/test?retryWrites=true&w=majority`;
+			},
+
+			get mongopwd() {
+				// return 'angular101';
+				return 'node101pwd';
+			}
+		};
 	}
 
 	static get modelNames() {
@@ -33,6 +51,11 @@ class Constants {
 				return 'User';
 			}
 		};
+	}
+
+	//----- for dev
+	static get devEnableDB() {
+		return true;
 	}
 }
 

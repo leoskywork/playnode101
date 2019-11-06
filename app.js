@@ -19,8 +19,8 @@ app.use('/', require('./routes/index'));
 app.use('/users', require('./routes/users'));
 
 //----- db
-const dbUri = require('./common/keys').mongoUri;
-// console.log(dbUri);
+const dbUri = AppConst.mongoConfig.mongoUri;
+console.log(dbUri);
 if (AppConst.devEnableDB) {
 	mongoose
 		.connect(dbUri, { useNewUrlParser: true, useUnifiedTopology: true })

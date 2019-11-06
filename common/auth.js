@@ -18,10 +18,10 @@ class Auth {
 					bcrypt.compare(password, user.password, (err, match) => {
 						if (err) this.handleError(err, 'bcrypt.compare');
 
-						this.log(match, 'bcrypt.compare result');
+						this.log('bcrypt.compare result: ' + match);
 
 						if (match) {
-							return done(null, this.desensitizeUser(user));
+							return done(null, user);
 						} else {
 							return done(null, null, { message: 'password incorrect' });
 						}
@@ -31,7 +31,9 @@ class Auth {
 		);
 
 		passport.serializeUser((user, done) => {
-			this.log(user, 'serializeUser');
+			this.log('serialize user');
+			this.log(user);
+
 			done(null, user.id);
 		});
 
@@ -44,11 +46,11 @@ class Auth {
 	}
 
 	//?? seems not working
-	desensitizeUser(user) {
-		delete user.password;
-		delete user.emailLower;
-		return user;
-	}
+	// desensitizeUser(user) {
+	// 	delete user.password;
+	// 	delete user.emailLower;
+	// 	return user;
+	// }
 
 	//todo: error handling
 	handleError(error, source = 'auth', rethrow = true) {
@@ -56,8 +58,8 @@ class Auth {
 		if (rethrow) throw error;
 	}
 
-	log(message, source = 'auth') {
-		console.log(source + ':', message);
+	log(message) {
+		console.log(message);
 	}
 }
 

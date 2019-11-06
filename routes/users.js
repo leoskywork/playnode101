@@ -10,11 +10,23 @@ const passport = require('passport');
 router.get('/login', (req, resp) => resp.send({ api: 'login.get' }));
 
 router.post('/login', (req, resp, next) => {
+	//can't redirect here since using angular as a separate frontend
+	/*
 	passport.authenticate('local', {
 		successRedirect: '/about',
 		failureRedirect: '/faq',
 		failureFlash: true
-	})(req, resp, next);
+    })(req, resp, next);
+    */
+
+	//note: authenticate and return
+	//[ref](https://www.djamware.com/post/5a878b3c80aca7059c142979/securing-mean-stack-angular-5-web-application-using-passport)
+	const authRet = passport.authenticate('local', { failureFlash: true }, (err, user, verifyOptions) => {
+		//console.log('authenticated:', req.isAuthenticated());
+		console.log('passport auth callback:', err, user, verifyOptions);
+	});
+
+	authRet(req, resp, next);
 });
 
 router.get('/logout', (req, resp) => {

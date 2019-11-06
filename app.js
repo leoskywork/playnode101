@@ -55,10 +55,16 @@ app.use('/users', require('./routes/users'));
 
 //----- db
 const dbUri = AppConst.mongoConfig.mongoUri;
-console.log(dbUri);
+console.log(`local mongodb: ${AppConst.mongoConfig.useLocal}`);
+//console.log(dbUri);
 if (AppConst.dev.enableDB) {
 	mongoose
-		.connect(dbUri, { useNewUrlParser: true, useUnifiedTopology: true })
+		.connect(dbUri, {
+			useNewUrlParser: true,
+			useUnifiedTopology: true,
+			//fix DeprecationWarning: collection.ensureIndex is deprecated. Use createIndexes instead.
+			useCreateIndex: true
+		})
 		.then(() => {
 			console.log('mango db connected');
 		})
@@ -95,3 +101,4 @@ function generalErrorHandler(err, req, resp, next) {
 
 const port = process.env.PORT || AppConst.port;
 app.listen(port, console.log(`server started on port ${port}`));
+console.log('env:', app.get('env'));

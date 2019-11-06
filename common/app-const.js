@@ -28,12 +28,12 @@ class Constants {
 
 	static get mongoConfig() {
 		return {
-			get useCloud() {
-				return false;
+			get useLocal() {
+				return true;
 			},
 
 			get mongoUri() {
-				return this.useCloud ? this.mongoCloud : this.mongoLocal;
+				return this.useLocal ? this.mongoLocal : this.mongoCloud;
 			},
 
 			get mongoCloud() {
@@ -44,12 +44,15 @@ class Constants {
 			//mongoShellUri: 'mongo "mongodb+srv://aws-sgp-a1-xzhdi.mongodb.net/test"  --username angular101'
 
 			get mongoLocal() {
-				return `mongodb://node101:${encodeURIComponent(this.mongopwd)}@localhost/test?retryWrites=true&w=majority`;
+				return `mongodb://node101:${encodeURIComponent(this.mongopwd)}@localhost/test`;
 			},
 
 			get mongopwd() {
-				// return 'angular101';
-				return 'node101pwd';
+				if (this.useLocal) {
+					return 'node101pwd';
+				} else {
+					return 'angular';
+				}
 			}
 		};
 	}

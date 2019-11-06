@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
 	},
 	email: {
 		type: String,
+		unique: true,
 		required: true
 	},
 	//note: it's case sensitive when doing mongoose.find(), so store lowered case for match
@@ -17,6 +18,7 @@ const userSchema = new mongoose.Schema({
 	//  [ref](https://stackoverflow.com/questions/1863399/mongodb-is-it-possible-to-make-a-case-insensitive-query)
 	emailLower: {
 		type: String,
+		unique: true,
 		required: true
 	},
 	password: {

@@ -8,6 +8,15 @@
 
 //todo: rename to AppConst
 class Constants {
+	//----- for dev
+	static get dev() {
+		return {
+			get enableDB() {
+				return true;
+			}
+		};
+	}
+
 	//static port = 5000; //note:  not valid syntax in ES6(2015)
 	static get port() {
 		return 5000;
@@ -51,11 +60,6 @@ class Constants {
 				return 'User';
 			}
 		};
-	}
-
-	//----- for dev
-	static get devEnableDB() {
-		return true;
 	}
 }
 

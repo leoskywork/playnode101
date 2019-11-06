@@ -7,7 +7,21 @@ const AppConst = require('../common/app-const');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 
-router.get('/login', (req, resp) => resp.send('login'));
+router.get('/login', (req, resp) => resp.send({ api: 'login.get' }));
+
+router.post('/login', (req, resp, next) => {
+	passport.authenticate('local', {
+		successRedirect: '/about',
+		failureRedirect: '/faq',
+		failureFlash: true
+	})(req, resp, next);
+});
+
+router.get('/logout', (req, resp) => {
+	req.logout();
+	req.flash('success_msg', 'you are logged out');
+	resp.redirect('/login');
+});
 
 router.get('/register', (req, resp) => {
 	//res.send('register.get ');
@@ -21,7 +35,7 @@ router.post('/register', (req, resp) => {
 	const errors = validateRegisterInfo(email, password, password2);
 
 	if (errors.length > 0) {
-		resp.send(new ApiResult(false, { errors, regInfo: desensitizeReq(req.body) }));
+		resp.send(new ApiResult(false, { regInfo: desensitizeReq(req.body) }, errors));
 		return;
 	}
 
@@ -36,7 +50,7 @@ router.post('/register', (req, resp) => {
 	User.findOne({ emailLower: emailLower }).then(user => {
 		if (user) {
 			errors.push(`email already registered`);
-			resp.send(new ApiResult(false, { errors, regInfo: desensitizeReq(req.body) }));
+			resp.send(new ApiResult(false, { regInfo: desensitizeReq(req.body) }, errors));
 			return;
 		}
 

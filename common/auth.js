@@ -33,7 +33,7 @@ class Auth {
 		passport.serializeUser((user, done) => {
 			this.log('serialize user ' + user.emailLower, user.id);
 
-			//note: this function will be called if req.login() passes, only the user.id is serialized to the session
+			//note: this function will be called if req.login() passes, only the user.id is serialized to the session,
 			//  keeping the amount of data stored within the session small, when subsequent requests are received, this id
 			//  is used to find the user(ref deserializeUser()), which will be restored to req.user.
 			done(null, user.id);

@@ -31,6 +31,8 @@ app.use(
 		secret: 'secret101',
 		resave: true,
 		saveUninitialized: true,
+		//use connect-mongo to persistance session
+		//  - [ref](https://www.npmjs.com/package/connect-mongo)
 		store: new MongoStore({
 			url: AppConst.mongoConfig.mongoUri,
 			// collection: 'expressSessions', //default sessions

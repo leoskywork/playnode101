@@ -9,21 +9,29 @@ const passport = require('passport');
 
 router.get('/login', (req, resp) => resp.send({ api: 'login.get' }));
 
+//note: please notice the differences
+//                          //...auth...() as middleware(router handler)
+//
+//  (1)- router.post('/login', passport.authenticate('local'), (req, res) => ...)
+//  (2)- router.post('/login', (req, res, next) => { passport.authenticate('local', (err, user, verifyInfo) => ...)(req, res, next);  })
+//
+//                          //...auth...() called within router handler
+//
+//for case (1), by default, if authentication fails, Passport will respond with a 401 Unauthorized status, and any additional route handlers will not be invoked.
+//If authentication succeeds, the next handler will be invoked and the req.user property will be set to the authenticated user.
 router.post('/login', (req, resp, next) => {
-	/*
-	//can't redirect here since using angular as a separate frontend
+	/*//can't redirect here since using angular as a separate frontend
 	passport.authenticate('local', {
 			successRedirect: '/feed',
 			failureRedirect: '/faq',
 			failureFlash: true
 	})(req, resp, next);
-    return;
-    */
+    return; */
 
 	//note: authenticate and return, use custom callback(instead of built in options - see above)
 	//  - need manually call req.login() to establish a session in this case
 	//[ref](https://www.djamware.com/post/5a878b3c80aca7059c142979/securing-mean-stack-angular-5-web-application-using-passport)
-	const authRet = passport.authenticate('local', (err, user, verifyOptions) => {
+	passport.authenticate('local', (err, user, verifyOptions) => {
 		console.log('passport auth callback:', err, user, verifyOptions);
 		const verifyMessage = verifyOptions != null ? verifyOptions.message : null;
 
@@ -47,9 +55,7 @@ router.post('/login', (req, resp, next) => {
 			//resp.redirect('/feed'); return;
 			resp.json(new ApiResult(true, desensitizeUser(user)));
 		});
-	});
-
-	authRet(req, resp, next);
+	})(req, resp, next);
 });
 
 router.get('/logout', (req, resp) => {

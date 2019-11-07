@@ -35,8 +35,8 @@ app.use(
 		//  - [ref](https://www.npmjs.com/package/connect-mongo)
 		store: new MongoStore({
 			url: AppConst.mongoConfig.mongoUri,
-			// collection: 'expressSessions', //default sessions
-			ttl: 14 * 24 * 60 * 60 //default 14 days
+			// collection: 'expressSessions', //default value is sessions
+			ttl: 14 * 24 * 60 * 60 //default expire date is 14 days
 		})
 		//todo: ??
 		// cookie: {

@@ -10,8 +10,8 @@ const passport = require('passport');
 router.get('/login', (req, resp) => resp.send({ api: 'login.get' }));
 
 router.post('/login', (req, resp, next) => {
-	//can't redirect here since using angular as a separate frontend
 	/*
+	//can't redirect here since using angular as a separate frontend
 	passport.authenticate('local', {
 		successRedirect: '/about',
 		failureRedirect: '/faq',
@@ -24,6 +24,19 @@ router.post('/login', (req, resp, next) => {
 	const authRet = passport.authenticate('local', { failureFlash: true }, (err, user, verifyOptions) => {
 		//console.log('authenticated:', req.isAuthenticated());
 		console.log('passport auth callback:', err, user, verifyOptions);
+		const verifyMessage = verifyOptions != null ? verifyOptions.message : null;
+
+		if (err) {
+			handleError('login authenticate', err);
+			resp.json(new ApiResult(false, null, verifyMessage));
+			return;
+		}
+
+		if (user) {
+			resp.json(new ApiResult(true, desensitizeUser(user)));
+		} else {
+			resp.json(new ApiResult(false, null, verifyMessage));
+		}
 	});
 
 	authRet(req, resp, next);
@@ -70,7 +83,7 @@ router.post('/register', (req, resp) => {
 
 		bcrypt.genSalt(AppConst.bcryptSaltRounds, (err, salt) => {
 			if (err) {
-				handleError('gen salt error', err);
+				handleError('gen salt error', err, true);
 			}
 
 			bcrypt
@@ -83,14 +96,14 @@ router.post('/register', (req, resp) => {
 							//todo: impl flash message
 							//req.flash('success_msg', 'You are now registered');
 							// resp.redirect('/users/login');
-							resp.send(new ApiResult(true, { name: savedUser.name, email: savedUser.email }, 'You are now registered'));
+							resp.send(new ApiResult(true, desensitizeUser(savedUser), 'You are now registered'));
 						})
 						.catch(err => {
-							handleError('save-newUser-error', err);
+							handleError('save-newUser-error', err, true);
 						});
 				})
 				.catch(hashErr => {
-					handleError('hash pwd error', hashErr);
+					handleError('hash pwd error', hashErr, true);
 				});
 		});
 	});
@@ -99,12 +112,6 @@ router.post('/register', (req, resp) => {
 		delete reqBody.password;
 		delete reqBody.password2;
 		return reqBody;
-	}
-
-	//todo: error handling
-	function handleError(source, error) {
-		console.log(source, error);
-		throw error;
 	}
 
 	function validateRegisterInfo(email, password, password2) {
@@ -129,5 +136,22 @@ router.post('/register', (req, resp) => {
 		return errors;
 	}
 });
+
+//todo: error handling
+function handleError(source, error, rethrow = false) {
+	console.log(source + ':', error);
+
+	if (rethrow) {
+		throw error;
+	}
+}
+
+function desensitizeUser(user) {
+	return {
+		name: user.name,
+		email: user.email,
+		registerDate: user.date
+	};
+}
 
 module.exports = router;

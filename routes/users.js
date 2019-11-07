@@ -13,16 +13,17 @@ router.post('/login', (req, resp, next) => {
 	/*
 	//can't redirect here since using angular as a separate frontend
 	passport.authenticate('local', {
-		successRedirect: '/about',
-		failureRedirect: '/faq',
-		failureFlash: true
-    })(req, resp, next);
+			successRedirect: '/feed',
+			failureRedirect: '/faq',
+			failureFlash: true
+	})(req, resp, next);
+    return;
     */
 
-	//note: authenticate and return
+	//note: authenticate and return, use custom callback(instead of built in options - see above)
+	//  - need manually call req.login() to establish a session in this case
 	//[ref](https://www.djamware.com/post/5a878b3c80aca7059c142979/securing-mean-stack-angular-5-web-application-using-passport)
-	const authRet = passport.authenticate('local', { failureFlash: true }, (err, user, verifyOptions) => {
-		//console.log('authenticated:', req.isAuthenticated());
+	const authRet = passport.authenticate('local', (err, user, verifyOptions) => {
 		console.log('passport auth callback:', err, user, verifyOptions);
 		const verifyMessage = verifyOptions != null ? verifyOptions.message : null;
 
@@ -32,11 +33,20 @@ router.post('/login', (req, resp, next) => {
 			return;
 		}
 
-		if (user) {
-			resp.json(new ApiResult(true, desensitizeUser(user)));
-		} else {
-			resp.json(new ApiResult(false, null, verifyMessage));
+		if (!user) {
+			resp.status(401).send(new ApiResult(false, null, verifyMessage));
 		}
+
+		req.login(user, err => {
+			if (err) {
+				handleError(err, 'req.login');
+				next(err);
+				return;
+			}
+
+			//resp.redirect('/feed'); return;
+			resp.json(new ApiResult(true, desensitizeUser(user)));
+		});
 	});
 
 	authRet(req, resp, next);

@@ -17,6 +17,10 @@ class Constants {
 		};
 	}
 
+	static get clientAppHost() {
+		return 'http://localhost:4200';
+	}
+
 	//static port = 5000; //note:  not valid syntax in ES6(2015)
 	static get port() {
 		return 5000;

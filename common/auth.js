@@ -11,19 +11,19 @@ class Auth {
 				if (!email) throw 'email required';
 
 				User.findOne({ emailLower: String(email).toLowerCase() }, (err, user) => {
-					if (err) this.handleError(err);
+					if (err) this.handleError(err, 'User.findOne', true);
 
-					if (!user) return done(null, null, { message: `Email ${email} is not registered` });
+					if (!user) return done(null, false, { message: `Email ${email} is not registered` });
 
 					bcrypt.compare(password, user.password, (err, match) => {
-						if (err) this.handleError(err, 'bcrypt.compare');
+						if (err) this.handleError(err, 'bcrypt.compare', true);
 
-						this.log('bcrypt.compare result: ' + match);
+						this.log('bcrypt.compare result', match);
 
 						if (match) {
 							return done(null, user);
 						} else {
-							return done(null, null, { message: 'password incorrect' });
+							return done(null, false, { message: 'password incorrect' });
 						}
 					});
 				});
@@ -31,15 +31,21 @@ class Auth {
 		);
 
 		passport.serializeUser((user, done) => {
-			this.log('serialize user');
-			this.log(user);
+			this.log('serialize user ' + user.emailLower, user.id);
 
+			//note: this function will be called if req.login() passes, only the user.id is serialized to the session
+			//  keeping the amount of data stored within the session small, when subsequent requests are received, this id
+			//  is used to find the user(ref deserializeUser()), which will be restored to req.user.
 			done(null, user.id);
 		});
 
 		passport.deserializeUser((id, done) => {
+			this.log('deserialize user', id);
+
 			User.findById(id, (err, user) => {
-				this.handleError(err, 'deserializeUser', false);
+				if (err) {
+					this.handleError(err, 'deserialize user');
+				}
 				done(err, user);
 			});
 		});
@@ -53,13 +59,13 @@ class Auth {
 	// }
 
 	//todo: error handling
-	handleError(error, source = 'auth', rethrow = true) {
-		console.log(source, error);
+	handleError(error, source = 'auth', rethrow = false) {
+		console.log(source + ':', error);
 		if (rethrow) throw error;
 	}
 
-	log(message) {
-		console.log(message);
+	log(source, message) {
+		console.log(source + ':', message);
 	}
 }
 

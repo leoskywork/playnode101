@@ -54,8 +54,7 @@ router.post('/login', (req, resp, next) => {
 
 router.get('/logout', (req, resp) => {
 	req.logout();
-	req.flash('success_msg', 'you are logged out');
-	resp.redirect('/login');
+	resp.json(new ApiResult(true, 'You have logged out'));
 });
 
 router.get('/register', (req, resp) => {

@@ -5,6 +5,7 @@ const passport = require('passport');
 const connectFlash = require('connect-flash');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const MongoStore = require('connect-mongo')(expressSession);
 
 const AppConst = require('./common/app-const');
 const Auth = require('./common/auth');
@@ -29,11 +30,17 @@ app.use(
 		//secret can be any random chars
 		secret: 'secret101',
 		resave: true,
-		saveUninitialized: true
+		saveUninitialized: true,
+		store: new MongoStore({
+			url: AppConst.mongoConfig.mongoUri,
+			// collection: 'expressSessions', //default sessions
+			ttl: 14 * 24 * 60 * 60 //default 14 days
+		})
 		//todo: ??
 		// cookie: {
-		//     maxAge: 60 * 1000,
-		//     secure: true
+		//     maxAge: 60 * 1000
+		//     //for https
+		//     //secure: true
 		// }
 	})
 );

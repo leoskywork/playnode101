@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const mongoose = require('mongoose');
 const expressSession = require('express-session');
 const passport = require('passport');
@@ -12,10 +13,15 @@ const Auth = require('./common/auth');
 
 const app = express();
 
+//----- set static folder
+//static folder is for the non-api(web page) part, e.g when frontend is angular, remember to set the output dir to
+//the public folder(in this case, web page and api are hosted on the same port)
+//also need add route rule to make this work, please notice the line 'app.get('*', ...)' in this file
+app.use(express.static(path.join(__dirname, 'public')));
+
 //----- body parser - put this before routes
 //todo: [x] what does 'extended' do? set to true?
 //[ref](https://stackoverflow.com/questions/24543847/req-body-empty-on-posts)
-app.use(express.static('public'));
 //app.use(express.urlencoded({ extended: true }));
 //app.use(express.json());
 //app.use(express.cookieParser()); //express v4+ no longer provide
@@ -37,13 +43,11 @@ app.use(
 			url: AppConst.mongoConfig.mongoUri,
 			// collection: 'expressSessions', //default value is sessions
 			ttl: 14 * 24 * 60 * 60 //default expire date is 14 days
-		})
-		//todo: ??
-		// cookie: {
-		//     maxAge: 60 * 1000
-		//     //for https
-		//     //secure: true
-		// }
+		}),
+		cookie: {
+			maxAge: 7 * 24 * 60 * 60 * 1000 //in milliseconds
+			//secure: true //for https
+		}
 	})
 );
 
@@ -88,6 +92,11 @@ app.use(
 //----- routes
 app.use('/', require('./routes/index'));
 app.use('/users', require('./routes/users'));
+//the following is not needed if only host api request, it's for web pages
+app.use('*', (req, res) => {
+	console.log('route rule * :', req);
+	res.sendFile(path.join(__dirname, 'public/index.html'));
+});
 
 //----- db
 const dbUri = AppConst.mongoConfig.mongoUri;

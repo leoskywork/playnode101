@@ -12,12 +12,13 @@ router.get('/login', (req, resp) => resp.send({ api: 'login.get' }));
 //note: please notice the differences
 //                          //...auth...() as middleware(router handler)
 //
-//  (1)- router.post('/login', passport.authenticate('local'), (req, res) => ...)
-//  (2)- router.post('/login', (req, res, next) => { passport.authenticate('local', (err, user, verifyInfo) => ...)(req, res, next);  })
+//(1) router.post('/login', passport.authenticate('local'), (req, res) => ...)
+//(2) router.post('/login', (req, res, next) => { passport.authenticate('local', (err, user, verifyInfo) => ...)(req, res, next);  })
 //
 //                          //...auth...() called within router handler
 //
-//for case (1), by default, if authentication fails, Passport will respond with a 401 Unauthorized status, and any additional route handlers will not be invoked.
+//for case (1), by default, if authentication fails, Passport will respond with a 401 Unauthorized status,
+//and any additional route handlers will not be invoked.
 //If authentication succeeds, the next handler will be invoked and the req.user property will be set to the authenticated user.
 router.post('/login', (req, resp, next) => {
 	/*//can't redirect here since using angular as a separate frontend
@@ -32,7 +33,7 @@ router.post('/login', (req, resp, next) => {
 	//  - need manually call req.login() to establish a session in this case
 	//[ref](https://www.djamware.com/post/5a878b3c80aca7059c142979/securing-mean-stack-angular-5-web-application-using-passport)
 	passport.authenticate('local', (err, user, verifyOptions) => {
-		console.log('passport auth callback:', err, user, verifyOptions);
+		console.log('passport auth callback:', err, user ? user.email : null, verifyOptions);
 		const verifyMessage = verifyOptions != null ? verifyOptions.message : null;
 
 		if (err) {
@@ -52,7 +53,7 @@ router.post('/login', (req, resp, next) => {
 				return;
 			}
 
-			//resp.redirect('/feed'); return;
+			//resp.redirect('/feed'); return; //do the redirect on angular side
 			resp.json(new ApiResult(true, desensitizeUser(user)));
 		});
 	})(req, resp, next);
@@ -69,7 +70,7 @@ router.get('/register', (req, resp) => {
 });
 
 router.post('/register', (req, resp) => {
-	console.log(req.body);
+	console.log('post register:', req.body);
 	//resp.send('{"api": "register.post"}'); return;
 	const { email, password, password2 } = req.body;
 	const errors = validateRegisterInfo(email, password, password2);

@@ -45,7 +45,7 @@ app.use(
 			ttl: 14 * 24 * 60 * 60 //default expire date is 14 days
 		}),
 		cookie: {
-			maxAge: 7 * 24 * 60 * 60 * 1000 //in milliseconds
+			maxAge: 7 * 24 * 60 * 60 * 1000 //MDN says seconds, but find it's in milliseconds by manual test
 			//secure: true //for https
 		}
 	})

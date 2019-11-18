@@ -4,6 +4,15 @@ const passport = require('passport');
 
 router.get('/', (req, res) => res.send('hello, nodejs'));
 
+router.get('/news', (req, res) => {
+	res.json({
+		api: 'GET /news',
+		auth: req.isAuthenticated(),
+		user: req.user ? req.user.email : '<none>',
+		data: 'topic 1'
+	});
+});
+
 router.get('/feed', (req, res) => {
 	console.log('get feed req.body:', req.body);
 	console.log('get feed authenticated:', req.isAuthenticated());

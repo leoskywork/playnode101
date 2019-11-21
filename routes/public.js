@@ -96,7 +96,9 @@ router.delete('/todos/:id', async (req, res) => {
 	try {
 		const id = req.params.id;
 		await Task.deleteOne({ _id: id });
-		return res.sendStatus(204);
+		// unify the response format
+		// return res.sendStatus(204);
+		return res.json(ApiResult.success('code ' + 204));
 	} catch (error) {
 		return res.json(ApiResult.fail('fail to delete due to : ' + error));
 	}

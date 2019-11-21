@@ -79,7 +79,7 @@ app.use(
 		//  - enable client host list, better define allowedOrigins outside
 		origin: (origin, callback) => {
 			if (!origin) return callback(null, true);
-			const allowedOrigins = [AppConst.clientAppHost];
+			const allowedOrigins = [AppConst.clientAngular101Host, AppConst.clientReact101Host];
 
 			if (allowedOrigins.indexOf(origin) === -1) {
 				return callback(new Error(`CORS policy disallow access from origin: ${origin}`), false);

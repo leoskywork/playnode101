@@ -17,8 +17,12 @@ class Constants {
 		};
 	}
 
-	static get clientAppHost() {
+	static get clientAngular101Host() {
 		return 'http://localhost:4200';
+	}
+
+	static get clientReact101Host() {
+		return 'http://localhost:3000';
 	}
 
 	//static port = 5000; //note:  not valid syntax in ES6(2015)

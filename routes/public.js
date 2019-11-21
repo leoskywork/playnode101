@@ -5,6 +5,14 @@ const ApiResult = require('../dto/api-result');
 const Utility = require('../common/app-utility');
 const router = express.Router();
 
+//----- api list
+// GET     /public
+// GET     /public/todos?limit=5   can access req.query.limit
+// GET     /public/todos/:id       need req.params.id
+// PUT     /public/todos           need req.body
+// POST    /public/todos/:id       need req.params.id, req.body
+// DELETE  /public/todos/:id       need req.params.id
+//-----
 router.get('/', async (req, res) => {
 	if (await defenderAntiSpam(res)) return;
 	res.sendStatus(200);

@@ -2,13 +2,18 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 
+let newsReqCount = 0;
+
 router.get('/', (req, res) => res.send('hello, nodejs'));
 
 router.get('/news', (req, res) => {
+	newsReqCount++;
+
 	res.json({
 		api: 'GET /news',
 		auth: req.isAuthenticated(),
 		user: req.user ? req.user.email : '<none>',
+		serial: newsReqCount,
 		data: 'topic 1'
 	});
 });

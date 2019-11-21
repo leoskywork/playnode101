@@ -9,6 +9,12 @@ class AppUtility {
 	static notEmpty(value) {
 		return value && String(value).trim().length > 0;
 	}
+
+	static sleep(ms) {
+		return new Promise(resolve => {
+			setTimeout(resolve, ms);
+		});
+	}
 }
 
 module.exports = AppUtility;

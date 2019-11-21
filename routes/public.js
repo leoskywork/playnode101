@@ -5,9 +5,13 @@ const ApiResult = require('../dto/api-result');
 const Utility = require('../common/app-utility');
 const router = express.Router();
 
-router.get('/', (req, res) => res.sendStatus(200));
+router.get('/', async (req, res) => {
+	if (await defenderFindSpam(res)) return;
+	res.sendStatus(200);
+});
 
 router.get('/todos', async (req, res) => {
+	if (await defenderFindSpam(res)) return;
 	let limit = req.query.limit || AppConst.mongoConfig.defaultRowCount;
 	limit = Math.min(limit, AppConst.mongoConfig.maxRowCount);
 
@@ -22,6 +26,7 @@ router.get('/todos', async (req, res) => {
 });
 
 router.get('/todos/:id', async (req, res) => {
+	if (await defenderFindSpam(res)) return;
 	if (!req.params.id) return res.json(ApiResult.fail('id not set'));
 
 	try {
@@ -37,10 +42,17 @@ router.get('/todos/:id', async (req, res) => {
 });
 
 router.put('/todos', async (req, res) => {
+	if (await defenderFindSpam(res)) return;
 	checkInsertOrUpdateTaskPreconditions(req, res);
 	if (res.body) return;
 
 	try {
+		const count = await Task.countDocuments();
+
+		if (count >= AppConst.mongoConfig.maxRowCount) {
+			return res.json(ApiResult.fail('exceeded item count limit, delete some items then try to add'));
+		}
+
 		const newTodo = new Task({ title: req.body.title, remark: req.body.remark, due: req.body.due, date: Date.now() });
 		const savedTodo = await newTodo.save();
 		return res.json(ApiResult.success(savedTodo));
@@ -65,7 +77,23 @@ function checkInsertOrUpdateTaskPreconditions(req, res) {
 	}
 }
 
+let apiAccessCount = 1;
+
+async function defenderFindSpam(res) {
+	console.log('defend against spam ', apiAccessCount);
+
+	if (apiAccessCount % ((new Date().getHours() + 2) * 100) === 0) {
+		await Utility.sleep(5000);
+		res.json(`spam! 0xaa${apiAccessCount}`);
+		return true;
+	}
+
+	apiAccessCount++;
+	return false;
+}
+
 router.post('/todos/:id', async (req, res) => {
+	if (await defenderFindSpam(res)) return;
 	if (!req.params || !req.params.id) return res.json('id not set');
 	checkInsertOrUpdateTaskPreconditions(req, res);
 	if (res.body) return;
@@ -91,6 +119,7 @@ router.post('/todos/:id', async (req, res) => {
 });
 
 router.delete('/todos/:id', async (req, res) => {
+	if (await defenderFindSpam(res)) return;
 	if (!req.params || !req.params.id) return res.json(ApiResult.fail('id not set'));
 
 	try {

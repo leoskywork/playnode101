@@ -11,7 +11,7 @@ class AppUtility {
 	}
 
 	static sleep(ms) {
-		return new Promise(resolve => {
+		return new Promise((resolve, _) => {
 			setTimeout(resolve, ms);
 		});
 	}

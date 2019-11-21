@@ -30,4 +30,11 @@ npm run dev           # start server in dev mode(with nodemon)
 
 ```
 
+## fixed issues
+
+- trim mongoose model and map to dto
+  - [sof](https://stackoverflow.com/questions/28442920/mongoose-find-method-returns-object-with-unwanted-properties)
+
 ## more
+
+todo

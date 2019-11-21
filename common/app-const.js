@@ -32,6 +32,26 @@ class Constants {
 
 	static get mongoConfig() {
 		return {
+			get maxNameLength() {
+				return 64;
+			},
+
+			get defaultRowCount() {
+				return 10;
+			},
+
+			get maxRowCount() {
+				return 100;
+			},
+
+			get maxTitleLength() {
+				return 128;
+			},
+
+			get maxParagraphLength() {
+				return 1024;
+			},
+
 			get useLocal() {
 				return true;
 			},
@@ -63,6 +83,10 @@ class Constants {
 
 	static get modelNames() {
 		return {
+			get task() {
+				return 'Task';
+			},
+
 			get user() {
 				return 'User';
 			}

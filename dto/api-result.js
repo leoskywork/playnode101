@@ -10,6 +10,14 @@ class ApiResult {
 			this.data = data;
 		}
 	}
+
+	static fail(message) {
+		return new ApiResult(false, null, message);
+	}
+
+	static success(data, message = null) {
+		return new ApiResult(true, data, message);
+	}
 }
 
 module.exports = ApiResult;

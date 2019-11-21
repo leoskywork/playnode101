@@ -92,6 +92,7 @@ app.use(
 //----- routes
 app.use('/', require('./routes/index'));
 app.use('/users', require('./routes/users'));
+app.use('/public', require('./routes/public'));
 //the following is not needed if only host api request, it's for web pages
 app.use('*', (req, res) => {
 	console.log('route rule * :', req);

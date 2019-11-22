@@ -16,7 +16,12 @@ const taskSchema = new mongoose.Schema({
 		required: true,
 		default: false
 	},
-	date: {
+	createBy: {
+		type: String,
+		required: true,
+		maxlength: AppConst.mongoConfig.maxNameLength
+	},
+	createAt: {
 		type: Date,
 		//note: find duplicate values of date even rows are inserted at diff times, due to cache??
 		//  - have to manual set the right value before call save()

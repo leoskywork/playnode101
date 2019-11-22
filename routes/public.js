@@ -9,24 +9,24 @@ const router = express.Router();
 // GET     /public
 // GET     /public/todos?limit=5   can access req.query.limit
 // GET     /public/todos/:id       need req.params.id
-// PUT     /public/todos           need req.body
-// POST    /public/todos/:id       need req.params.id, req.body
+// POST    /public/todos           need req.body
+// PUT     /public/todos/:id       need req.params.id, req.body
 // DELETE  /public/todos/:id       need req.params.id
 //-----
 router.get('/', async (req, res) => {
-	if (await defenderAntiSpam(res)) return;
+	if (await failToPassAntiSpamDefender(res)) return;
 	res.sendStatus(200);
 });
 
 router.get('/todos', async (req, res) => {
-	if (await defenderAntiSpam(res)) return;
+	if (await failToPassAntiSpamDefender(res)) return;
 	let limit = req.query.limit || AppConst.mongoConfig.defaultRowCount;
 	limit = Math.min(limit, AppConst.mongoConfig.maxRowCount);
 
 	try {
 		//note: use 'lean' flag to return simple objects and speed up query
 		const tasks = await Task.find(null, null, { lean: true })
-			.sort({ date: -1 })
+			.sort({ createAt: -1 })
 			.limit(limit);
 		res.json(
 			new ApiResult(
@@ -40,7 +40,7 @@ router.get('/todos', async (req, res) => {
 });
 
 router.get('/todos/:id', async (req, res) => {
-	if (await defenderAntiSpam(res)) return;
+	if (await failToPassAntiSpamDefender(res)) return;
 	if (!req.params.id) return res.json(ApiResult.fail('id not set'));
 
 	try {
@@ -55,10 +55,9 @@ router.get('/todos/:id', async (req, res) => {
 	}
 });
 
-router.put('/todos', async (req, res) => {
-	if (await defenderAntiSpam(res)) return;
-	checkInsertOrUpdateTaskPreconditions(req, res);
-	if (res.body) return;
+router.post('/todos', async (req, res) => {
+	if (await failToPassAntiSpamDefender(res)) return;
+	if (insertOrUpdateTaskArgsHaveError(req, res)) return;
 
 	try {
 		const count = await Task.countDocuments();
@@ -67,7 +66,7 @@ router.put('/todos', async (req, res) => {
 			return res.json(ApiResult.fail('exceeded item count limit, delete some items then try to add'));
 		}
 
-		const newTodo = new Task({ title: req.body.title, remark: req.body.remark, due: req.body.due, date: Date.now() });
+		const newTodo = new Task({ title: req.body.title, remark: req.body.remark, due: req.body.due, createAt: Date.now(), createBy: '<fixme>' });
 		const savedTodo = await newTodo.save();
 		return res.json(ApiResult.success(mapToDto(savedTodo.toObject(), true)));
 	} catch (error) {
@@ -75,11 +74,10 @@ router.put('/todos', async (req, res) => {
 	}
 });
 
-router.post('/todos/:id', async (req, res) => {
-	if (await defenderAntiSpam(res)) return;
+router.put('/todos/:id', async (req, res) => {
+	if (await failToPassAntiSpamDefender(res)) return;
+	if (insertOrUpdateTaskArgsHaveError(req, res)) return;
 	if (!req.params || !req.params.id) return res.json('id not set');
-	checkInsertOrUpdateTaskPreconditions(req, res);
-	if (res.body) return;
 
 	try {
 		const oldTodo = await Task.findById(req.params.id);
@@ -91,7 +89,7 @@ router.post('/todos/:id', async (req, res) => {
 		oldTodo.due = req.body.due;
 
 		//todo: get by session
-		oldTodo.lastUpdateBy = '<fixme>';
+		oldTodo.lastUpdateBy = '<fixme2>';
 		oldTodo.lastUpdateAt = Date.now();
 
 		const savedTodo = await oldTodo.save();
@@ -102,7 +100,7 @@ router.post('/todos/:id', async (req, res) => {
 });
 
 router.delete('/todos/:id', async (req, res) => {
-	if (await defenderAntiSpam(res)) return;
+	if (await failToPassAntiSpamDefender(res)) return;
 	if (!req.params || !req.params.id) return res.json(ApiResult.fail('id not set'));
 
 	try {
@@ -131,7 +129,7 @@ function mapToDto(todo, returnExistingObject = false) {
 	return mapped;
 }
 
-function checkInsertOrUpdateTaskPreconditions(req, res) {
+function insertOrUpdateTaskArgsHaveError(req, res) {
 	if (!req.body) return res.json(ApiResult.fail('post body not set'));
 
 	if (!req.body.title) return res.json(ApiResult.fail('title of todo not set'));
@@ -145,11 +143,13 @@ function checkInsertOrUpdateTaskPreconditions(req, res) {
 		//fixme: potential time zone offset
 		if (new Date(req.body.due).getTime() < Date.now()) return res.json(ApiResult.fail(`due time [${req.body.due}] is a past date`));
 	}
+
+	return false;
 }
 
 let apiAccessCount = 1;
 
-async function defenderAntiSpam(res) {
+async function failToPassAntiSpamDefender(res) {
 	console.log('anti spam ', apiAccessCount);
 
 	if (apiAccessCount % ((new Date().getHours() + 5) * 1000) === 0) {

@@ -93,6 +93,7 @@ app.use(
 app.use('/', require('./routes/index'));
 app.use('/users', require('./routes/users'));
 app.use('/public', require('./routes/public'));
+
 //the following is not needed if only host api request, it's for web pages
 app.use('*', (req, res) => {
 	console.log('route rule * :', req);
@@ -127,22 +128,31 @@ app.use(xhrErrorHandler);
 app.use(generalErrorHandler);
 
 function logError(err, req, resp, next) {
-	console.log('app.logError: ', err);
+	console.log('app.logError -->', err);
 	next(err);
 }
 
 function xhrErrorHandler(err, req, resp, next) {
 	if (req.xhr) {
 		//DO NOT call next() here since we already set(send back) the response
-		resp.status(500).send({ error: err.message | 'xhr request error' });
+		resp.status(500).send({ error: err.message || 'xhr request error' });
 	} else {
 		next(err);
 	}
 }
 
 function generalErrorHandler(err, req, resp, next) {
-	resp.status(500);
-	resp.render('error', { error: err });
+	resp.status(err.status || err.statusCode || 500);
+	//fixme: get error when call render() due to no default view engine was set, so just response error here
+	//  - we are handling non-xhr call error here, so return a view is more appropriate
+	//resp.render('error', { error: err });
+	resp.send(getErrorTemplate(err));
+}
+
+function getErrorTemplate(error) {
+	const status = error.status || error.statusCode || '';
+
+	return `<html><head></head><body> <h3>Error ${status}</h3> <br/> <p>${error}</p>  </body></html>`;
 }
 
 const port = process.env.PORT || AppConst.port;

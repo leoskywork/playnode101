@@ -24,9 +24,13 @@ npm i --save cors     # install cors module for enabling cross origin resource s
 
 # change package.json
   # add scripts.start, scripts.dev
+    # "start": "node app.js",
+    # "dev": "nodemon app.js"
 
 npm run dev           # start server in dev mode(with nodemon)
 
+# misc
+  # add gitignore file to exclude node_modules folder
 
 ```
 

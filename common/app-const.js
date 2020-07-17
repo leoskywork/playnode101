@@ -8,94 +8,94 @@
 
 //todo: rename to AppConst
 class Constants {
-	//----- for dev
-	static get dev() {
-		return {
-			get enableDB() {
-				return true;
-			}
-		};
-	}
+    //----- for dev
+    static get dev() {
+        return {
+            get enableDB() {
+                return true;
+            }
+        };
+    }
 
-	static get clientAngular101Host() {
-		return 'http://localhost:4200';
-	}
+    static get clientAngular101Host() {
+        return 'http://localhost:4200';
+    }
 
-	static get clientReact101Host() {
-		return 'http://localhost:3000';
-	}
+    static get clientReact101Host() {
+        return 'http://localhost:3000';
+    }
 
-	//static port = 5000; //note:  not valid syntax in ES6(2015)
-	static get port() {
-		return 5000;
-	}
+    //static port = 5000; //note:  not valid syntax in ES6(2015)
+    static get port() {
+        return 5000;
+    }
 
-	static get bcryptSaltRounds() {
-		return 10;
-	}
+    static get bcryptSaltRounds() {
+        return 10;
+    }
 
-	static get mongoConfig() {
-		return {
-			get maxNameLength() {
-				return 64;
-			},
+    static get mongoConfig() {
+        return {
+            get maxNameLength() {
+                return 64;
+            },
 
-			get defaultRowCount() {
-				return 10;
-			},
+            get defaultRowCount() {
+                return 10;
+            },
 
-			get maxRowCount() {
-				return 100;
-			},
+            get maxRowCount() {
+                return 100;
+            },
 
-			get maxTitleLength() {
-				return 128;
-			},
+            get maxTitleLength() {
+                return 128;
+            },
 
-			get maxParagraphLength() {
-				return 1024;
-			},
+            get maxParagraphLength() {
+                return 1024;
+            },
 
-			get useLocal() {
-				return true;
-			},
+            get useLocal() {
+                return true;
+            },
 
-			get mongoUri() {
-				return this.useLocal ? this.mongoLocal : this.mongoCloud;
-			},
+            get mongoUri() {
+                return this.useLocal ? this.mongoLocal : this.mongoCloud;
+            },
 
-			get mongoCloud() {
-				return `mongodb+srv://angular101:${encodeURIComponent(this.mongopwd)}@aws-sgp-a1-xzhdi.mongodb.net/test?retryWrites=true&w=majority`;
-			},
-			//copy the following uri then open mongoDB compass, it will auto fill connect fields(except pwd, which need manually input)
-			//mongoCompassUri: 'mongodb+srv://angular101:<password>@aws-sgp-a1-xzhdi.mongodb.net/test',
-			//mongoShellUri: 'mongo "mongodb+srv://aws-sgp-a1-xzhdi.mongodb.net/test"  --username angular101'
+            get mongoCloud() {
+                return `mongodb+srv://angular101:${encodeURIComponent(this.mongopwd)}@aws-sgp-a1-xzhdi.mongodb.net/test?retryWrites=true&w=majority`;
+            },
+            //copy the following uri then open mongoDB compass, it will auto fill connect fields(except pwd, which need manually input)
+            //mongoCompassUri: 'mongodb+srv://angular101:<password>@aws-sgp-a1-xzhdi.mongodb.net/test',
+            //mongoShellUri: 'mongo "mongodb+srv://aws-sgp-a1-xzhdi.mongodb.net/test"  --username angular101'
 
-			get mongoLocal() {
-				return `mongodb://node101:${encodeURIComponent(this.mongopwd)}@localhost/test`;
-			},
+            get mongoLocal() {
+                return `mongodb://node101:${encodeURIComponent(this.mongopwd)}@localhost/test`;
+            },
 
-			get mongopwd() {
-				if (this.useLocal) {
-					return 'node101pwd';
-				} else {
-					return 'angular';
-				}
-			}
-		};
-	}
+            get mongopwd() {
+                if (this.useLocal) {
+                    return 'node101pwd';
+                } else {
+                    return 'angular';
+                }
+            }
+        };
+    }
 
-	static get modelNames() {
-		return {
-			get task() {
-				return 'Task';
-			},
+    static get modelNames() {
+        return {
+            get task() {
+                return 'Task';
+            },
 
-			get user() {
-				return 'User';
-			}
-		};
-	}
+            get user() {
+                return 'User';
+            }
+        };
+    }
 }
 
 module.exports = Constants;

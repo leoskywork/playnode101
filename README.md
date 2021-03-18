@@ -1,6 +1,6 @@
 # node 101 note
 
-> node with auth
+node with auth, for jwt part ref note/42-online-doc.md
 
 ## setup & run
 
@@ -42,3 +42,5 @@ npm run dev           # start server in dev mode(with nodemon)
 ## more
 
 todo
+
+[ ] jwt

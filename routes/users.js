@@ -19,7 +19,8 @@ router.get('/login', (req, resp) => resp.send({ api: 'login.get' }));
 //
 //for case (1), by default, if authentication fails, Passport will respond with a 401 Unauthorized status,
 //and any additional route handlers will not be invoked.
-//If authentication succeeds, the next handler will be invoked and the req.user property will be set to the authenticated user.
+//If authentication succeeds, it invoke req.login() automatically and create a login session, 
+//the next handler will be invoked and the req.user property will be set to the authenticated user.
 router.post('/login', (req, resp, next) => {
     console.log('----- enter /login');
     /*//can't redirect here since using angular as a separate frontend

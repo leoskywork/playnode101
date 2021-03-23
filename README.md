@@ -2,6 +2,10 @@
 
 node with auth, for jwt part ref note/42-online-doc.md
 
+## todo
+
+- [ ] jwt
+
 ## setup & run
 
 ```sh
@@ -27,7 +31,9 @@ npm i --save cors     # install cors module for enabling cross origin resource s
     # "start": "node app.js",
     # "dev": "nodemon app.js"
 
-npm run dev           # start server in dev mode(with nodemon)
+# start server, relay on the 'scripts' setting in package.json file
+npm run dev           # start server with nodemon, can auto update running code to latest change, but can't debug in vscode
+npm run start         # press F5 to enter debug mode (or click the debug icon on LHS, then click the run button)
 
 # misc
   # add gitignore file to exclude node_modules folder
@@ -40,7 +46,3 @@ npm run dev           # start server in dev mode(with nodemon)
   - [sof](https://stackoverflow.com/questions/28442920/mongoose-find-method-returns-object-with-unwanted-properties)
 
 ## more
-
-todo
-
-[ ] jwt

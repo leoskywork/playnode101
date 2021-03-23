@@ -96,8 +96,9 @@ app.use('/public', require('./routes/public'));
 
 //the following is not needed if only host api request, it's for web pages
 app.use('*', (req, res) => {
-	console.log('route rule * :', req);
-	res.sendFile(path.join(__dirname, 'public/index.html'));
+    console.log('route rule * :', req.method, req.url, 'original:', req.originalUrl);
+    console.log('route rule * :', req)
+	res.sendFile(path.join(__dirname, 'defaultRouteIndex.html'));
 });
 
 //----- db
@@ -133,7 +134,9 @@ function logError(err, req, resp, next) {
 }
 
 function xhrErrorHandler(err, req, resp, next) {
-	if (req.xhr) {
+    //only check the req.xhr is not reliable
+    //[ref](https://stackoverflow.com/questions/15945118/detecting-ajax-requests-on-nodejs-with-express)
+	if (req.xhr || req.headers.accept.indexOf('json') > -1) {
 		//DO NOT call next() here since we already set(send back) the response
 		resp.status(500).send({ error: err.message || 'xhr request error' });
 	} else {

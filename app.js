@@ -93,11 +93,12 @@ app.use(
 app.use('/', require('./routes/index'));
 app.use('/users', require('./routes/users'));
 app.use('/public', require('./routes/public'));
+app.use('/mockingYF', require('./routes/mocking/mockingYF'));
 
 //the following is not needed if only host api request, it's for web pages
 app.use('*', (req, res) => {
-    console.log('route rule * :', req.method, req.url, 'original:', req.originalUrl);
-    console.log('route rule * :', req)
+    console.log('route rule * :', req.method, req.url, ', original:', req.originalUrl);
+    console.log('route rule * req :', req)
 	res.sendFile(path.join(__dirname, 'defaultRouteIndex.html'));
 });
 

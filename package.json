@@ -23,6 +23,6 @@
 		"start2": "node app.js",
 		"start": "nodemon app.js"
 	},
-	"author": "",
+	"author": "LEO",
 	"license": "ISC"
 }
